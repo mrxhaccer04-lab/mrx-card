@@ -3,8 +3,13 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Serve static files (HTML, CSS, JS)
+// Serve static files from root directory
 app.use(express.static(path.join(__dirname, './')));
+
+// Root route — serve index.html
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, './index.html'));
+});
 
 // In-memory approval store
 const approvals = {};
