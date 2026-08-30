@@ -1,12 +1,13 @@
 const express = require('express');
+const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// In-memory approval store (use database in production)
-const approvals = {};
-
 // Serve static files (HTML, CSS, JS)
-app.use(express.static('.'));
+app.use(express.static(path.join(__dirname, './')));
+
+// In-memory approval store
+const approvals = {};
 
 // Endpoint to approve user
 app.get('/approve/:email', (req, res) => {
@@ -27,7 +28,11 @@ app.get('/api/approval-status', (req, res) => {
   res.json({ status });
 });
 
-// Start server
+// Fallback: serve index.html for any unknown route
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, './index.html'));
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
